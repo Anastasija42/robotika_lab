@@ -1,4 +1,6 @@
 # Laboratorija za robotiku - OnePose projekat
+![ss](https://github.com/Anastasija42/robotika_lab/assets/101294691/cb57c01c-14ab-4fb9-8f5c-98fe300ee5ab)
+![ss2](https://github.com/Anastasija42/robotika_lab/assets/101294691/06500d21-fca8-4eef-b5de-a69f4e70a4a5)
 
 ## OnePose: One-Shot Object Pose Estimation without CAD Models
 > [Instalacija OnePose](https://github.com/zju3dv/OnePose) 
