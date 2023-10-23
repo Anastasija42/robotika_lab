@@ -35,6 +35,13 @@ python run.py +preprocess=sfm_spp_spg_sample.yaml
 ```
 <br/>
 
+## Pre pokretanja bilo koje skripte
+Pokrenuti sledece komande kako bi skripta prepoznala DeepLM modul.
+```
+export PYTHONPATH=$PYTHONPATH:/home/ana/Desktop:/home/ana/Desktop/DeepLM/build:/home/ana/Desktop/DeepLM
+export TORCH_USE_RTLD_GLOBAL=YES
+```
+
 ## Detekcija objekata u kvazi-realnom vremenu - sekvencijalno
 U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje potencijalno očekujemo. 
 
