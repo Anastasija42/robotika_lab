@@ -43,7 +43,17 @@ export TORCH_USE_RTLD_GLOBAL=YES
 ```
 
 ## Detekcija objekata u kvazi-realnom vremenu - sekvencijalno
-U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje potencijalno očekujemo. 
+U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje potencijalno očekujemo.  
+<br/>
+Ukoliko je cilj estimacija pozicije i orijentacije samo jednog objekta, pokrenuti skriptu `one.py`. Potrebno je smestiti odgovarajuci SFM model na adresi `/OnePose-main/data/demo/sfm_model` , u sledecem obliku:
+```
+|--- /sfm_model
+|       |--- outputs_superpoint_superglue 
+|       |--- box3d_corners.txt
+```
+`box3d_corners.txt` prekopirati iz `/home/ana/Desktop/OnePoseDatasetCollector/out/datasets/zeljeni_objekat/box3d_corners.txt`.
+Dok se skripta izvrsava, `rgb` prozor ce prikazivati estimaciju. Pritiskom na dugme `q` program se zavrsava, a video prenosa se cuva na adresi `/home/ana/Desktop/real_time_seq/`. Obzirom da se ne obradjuje svaki frame u "real-time" pristupu, sam snimak ce biti ubrzan. Svaka estimacija pojedinacnih frame-ova se cuva na adresi `/home/ana/Desktop/real_time_seq/1`. Ovo je najjednostavniji pristup.
+<br/>
 
 Napomene za mene:
 Fajl `one.py` i `two.py` rade sekvencijalno, `two.py` može i više istih objekata odjednom.
