@@ -64,7 +64,7 @@ U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje 
 <br/> Pokrenuti fajl, iskace prozor, cuva se video na kraju.
 
 Napomena za mene:
-Fajl `proba2.py` je paralelni pristup.
+Fajl `proba2.py` je paralelni pristup, treba doraditi za kopije iste vrste. svuda dodati distancu.
 
 
 ## Detekcija objekata u snimku
