@@ -64,7 +64,21 @@ U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje 
 <br/> Pokrenuti fajl, iskace prozor, cuva se video na kraju.
 
 Napomena za mene:
-Fajl `proba2.py` je paralelni pristup, treba doraditi za kopije iste vrste. svuda dodati distancu.
+Fajl `proba2.py` je paralelni pristup, treba doraditi za kopije iste vrste. svuda dodati distancu u vis_utils. 
+ovo je za optimizaciju: 
+def save_demo_image_(image, results, save_path=None):
+    for result in results:
+        box3d = np.loadtxt(result['box3d_path'])
+
+        if result['draw']:
+            reproj_box_2d = reproj(result['K'], result['pose'], box3d)
+            draw_3d_box(image, reproj_box_2d, color='b', linewidth=10)
+    
+    if save_path is not None:
+        Path(save_path).parent.mkdir(exist_ok=True, parents=True)
+
+        cv2.imwrite(save_path, image)
+    return image
 
 
 ## Detekcija objekata u snimku
