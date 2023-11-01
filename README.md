@@ -29,22 +29,22 @@ Dataset je sačuvan u `out/datasets/`.
 
 ## Predobrada
 Napraviti Structure-from-Motion model na osnovu snimljenog dataset-a. 
-U `sfm_spp_spg_sample.yaml` fajlu proveriti da li je `redo` vrednost postavljena na True. Postaviti `scan_data_dir` na željeni direktorijum (podrazumevano je ${work_dir}/data/onepose_datasets/sample_data). Pod `data_dir` navesti sve objekte koje želite da obradite. Dobijeni modeli čuvaju se u `/data/sfm_model/{}`.
+U `sfm_spp_spg_sample.yaml` fajlu proveriti da li je `redo` vrednost postavljena na True. Postaviti `scan_data_dir` na željeni direktorijum (podrazumevan `${work_dir}/data/onepose_datasets/sample_data`). Pod `data_dir` navesti sve objekte koje želite da obradite. Dobijeni modeli čuvaju se u `/data/sfm_model/{}`.
 ```
 python run.py +preprocess=sfm_spp_spg_sample.yaml
 ```
 <br/>
 
 ## Pre pokretanja bilo koje skripte
-Pokrenuti sledece komande kako bi skripta prepoznala DeepLM modul.
+Pokrenuti sledeće komande kako bi skripta prepoznala DeepLM modul.
 ```
 export PYTHONPATH=$PYTHONPATH:/home/ana/Desktop:/home/ana/Desktop/DeepLM/build:/home/ana/Desktop/DeepLM
 export TORCH_USE_RTLD_GLOBAL=YES
 ```
+Ukoliko je potrebno odrediti dubinu objekta, postoji funkcija u `vis_utils.py` fajlu, `get_coordinates` kojoj treba proslediti informacije (predikciju, K, box_path) objekta.
+U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje očekujemo, kao i koliko kopija kojih objekata očekujemo.
 
-## Detekcija objekata u kvazi-realnom vremenu - sekvencijalno
-U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje potencijalno očekujemo.  
-<br/>
+## Detekcija objekata u kvazi-realnom vremenu - sekvencijalno 
 Ukoliko je cilj estimacija pozicije i orijentacije samo jednog objekta, pokrenuti skriptu `one.py`. Potrebno je smestiti odgovarajuci SFM model na adresi `/OnePose-main/data/demo/sfm_model` , u sledecem obliku:
 ```
 |--- /sfm_model
@@ -52,53 +52,30 @@ Ukoliko je cilj estimacija pozicije i orijentacije samo jednog objekta, pokrenut
 |       |--- box3d_corners.txt
 ```
 `box3d_corners.txt` prekopirati iz `/home/ana/Desktop/OnePoseDatasetCollector/out/datasets/zeljeni_objekat/box3d_corners.txt`.
-Dok se skripta izvrsava, `rgb` prozor ce prikazivati estimaciju. Pritiskom na dugme `q` program se zavrsava, a video prenosa se cuva na adresi `/home/ana/Desktop/real_time_seq/`. Obzirom da se ne obradjuje svaki frame u "real-time" pristupu, sam snimak ce biti ubrzan. Svaka estimacija pojedinacnih frame-ova se cuva na adresi `/home/ana/Desktop/real_time_seq/1`. Ovo je najjednostavniji pristup.
+Dok se skripta izvrsava, `rgb` prozor ce prikazivati estimaciju. Pritiskom na dugme `q` program se zavrsava, a video prenosa se cuva na adresi `/home/ana/Desktop/real_time_seq/`. Obzirom da se ne obradjuje svaki frame u "real-time" pristupu, sam snimak ce biti ubrzan. Ovo je najjednostavniji pristup.
 <br/>
-
-Napomene za mene:
-Fajl `one.py` i `two.py` rade sekvencijalno, `two.py` može i više istih objekata odjednom.
-<br/> Pokrenuti fajl, iskace prozor, cuva se video na kraju.
-
+Pokrenuti `sequential.py` za estimaciju više objekata. Kako bi se optimizovalo vreme izvršavanja koda i minimizovao utrošak memorijskog prostora, ne čuvaju se pojedinačni frame-ovi i ne čuva se snimak na kraju. Potrebno je smestiti odgovarajuće SFM modele na adresi `/OnePose-main/data/demo` , u sledecem obliku:
+```
+|--- /sfm_model_0
+|       |--- outputs_superpoint_superglue 
+|       |--- box3d_corners.txtđ
+|   ...
+|--- /sfm_model_n
+|       |--- outputs_superpoint_superglue 
+|       |--- box3d_corners.txt
+```
 ## Detekcija objekata u kvazi-realnom vremenu - paralelni pristup
-U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje potencijalno očekujemo.
-<br/> Pokrenuti fajl, iskace prozor, cuva se video na kraju.
-
-Napomena za mene:
-Fajl `proba2.py` je paralelni pristup, treba doraditi za kopije iste vrste. svuda dodati distancu u vis_utils. 
-ovo je za optimizaciju: 
-def save_demo_image_(image, results, save_path=None):
-    for result in results:
-        box3d = np.loadtxt(result['box3d_path'])
-
-        if result['draw']:
-            reproj_box_2d = reproj(result['K'], result['pose'], box3d)
-            draw_3d_box(image, reproj_box_2d, color='b', linewidth=10)
-    
-    if save_path is not None:
-        Path(save_path).parent.mkdir(exist_ok=True, parents=True)
-
-        cv2.imwrite(save_path, image)
-    return image
-
+Pokrenuti `parallel.py` za estimaciju više objekata. Kako bi se optimizovalo vreme izvršavanja koda i minimizovao utrošak memorijskog prostora, ne čuvaju se pojedinačni frame-ovi i ne čuva se snimak na kraju.
 
 ## Detekcija objekata u snimku
-Sledećom komandom se otvara program pomoću kojeg možemo snimiti snimak. Format sačuvanog videa je `.bag` fajl, potrebno je izdvojiti frame-ove pomoću `rs-convert` komande. Pokrenuti fajl `rename.py` da bi se izvršilo preimenovanje frame-ova, potrebno je podesiti `folder_path` sa željenim direktorijumom.
+Sledećom komandom se otvara program pomoću kojeg možemo snimiti snimak. Format sačuvanog videa je `.bag` fajl, potrebno je izdvojiti frame-ove pomoću `rs-convert` komande. Pokrenuti fajl `rename.py` da bi se izvršilo preimenovanje frame-ova, potrebno je dodeliti `folder_path` promenljvi adresu željenog direktorijuma.
 ```
 realsense-viewer
 rs-convert -i nas_snimak.bag -p zeljeni_direktorijum/prefiks -c
 python3 rename.py
 ```
-U `test_demo.yaml` podesiti broj objekata koje očekujemo i vrstu objekata koje potencijalno očekujemo.
 <br/> 
-Pokrenuti dobar fajl.
+Ponovo postoje skripte sa dva pristupa, `video.py` i `video_parallel.py`. Na kraju izvrašavanja čuva se `demo_video.mp3`.
 <br/>
-Video je sacuvan negde.
-
-Napomena za mene:
-pogledati
-`drugi_fajl_paralelno.py`
-`drugi_fajl.py`
-`video.py`
-`video_bez_uticaja.py`
 
 ## Ako nešto ne radi, cimati anastasiju :)
